@@ -9,7 +9,7 @@ import json
 import sys
 import traceback
 
-import current as current
+
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
@@ -20,6 +20,8 @@ import datetime
 from pprint import pprint
 import base64
 import threading
+from concurrent.futures import ThreadPoolExecutor
+
 
 
 def read_f(file_name, encod='utf8'):
@@ -43,7 +45,7 @@ def write_j(data, file_name, type='w', indent=4, ensure_ascii=False, encod='utf8
         json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
 
 
-def clean_up_repetitive(list, Return='not_repetitive'):
+def repetitive(list, Return='not_repetitive'):
     repetitive = []
     not_repetitive = []
     for q in list:
@@ -67,17 +69,93 @@ def url_to_b64(link_to_file, file_name=None):
         write_f(fileB64, file_name)
 
 
-arts = read_f('arti.txt').split('\n')
-
+# arts = """104386
+# 104387
+# 106025
+# 106026
+# 106027
+# 106028
+# 106029
+# 106030
+# 106031
+# 106032
+# 106033
+# 106034
+# 106035
+# 106036
+# 106037
+# 106038
+# 106039
+# 106040
+# 106041
+# 106903
+# 106904
+# 106905
+# 106906
+# 106907
+# 106908
+# 106909
+# 106910
+# 106911
+# 106912
+# 106913
+# 106914
+# 106915
+# 106916
+# 119429
+# 120651
+# 120652
+# 120653
+# 120654
+# 120655
+# 120656
+# 120657
+# 120658
+# 120659
+# 120660
+# 120661
+# 120662
+# 120663
+# 120664
+# 120665
+# 120666
+# """.split('\n')
 
 def func(art):
-    link = 'https://datasheet.eaton.com/datasheet.php?model='+art+'&locale=ru_RU'
-    page = requests.get(link).content
-    title_ = bs(page, features='html.parser').find('div', class_='ds-header-content-product-description').text
+    try:
+        page = requests.get('https://datasheet.eaton.com/datasheet.php?model=' + art + '&locale=ru_RU',
+                            timeout=25).content
+        title_ = [bs(page, features='html.parser').find('div', class_='ds-header-content-product-description').text]
+    except:
+        title_ = None
     return title_
 
 
-def threads(func, List):
+def threads(func, List, max_workers=20):
+    import os
+    if not os.path.exists('pomo_timely_files'):
+        os.mkdir('pomo_timely_files')
+
+    futures = []
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        for i in List:
+            futures.append(executor.submit(func, i))
+
+        # ждем, когда закончат выполняться задачи
+        list_res = []
+        for future in futures:
+            list_res.append(future.result())
+
+
+    return(list_res)
+
+# old = time.time()
+# data = threads(func, arts)
+# write_j(data, 'RESULT.json')
+# print(time.time() - old)
+
+def threads20(func, List):
     import os
     if not os.path.exists('pomo_timely_files'):
         os.mkdir('pomo_timely_files')
@@ -199,7 +277,7 @@ def threads(func, List):
             l.append(res)
         write_j(l, 'pomo_timely_files/file'+str(NumberFile)+'.json')
         current_time = time.time() - time_old
-        print( current_time)
+        # print( current_time)
 
     listOfItems1 = threading.Thread(target=forOneList, args=(list1, 1,))
     listOfItems2 = threading.Thread(target=forOneList, args=(list2, 2,))
@@ -287,16 +365,6 @@ def threads(func, List):
 
     listOfItems = lis1 + lis2 + lis3 + lis4 + lis5 + lis6 + lis7 + lis8 + lis9 + lis10 + lis11 + lis12 + lis13 + lis14 + lis15 + lis16 + lis17 + lis18 + lis19 + lis20
     return listOfItems
-
-
-old = time.time()
-res = threads(func, arts)
-current = time.time() - old
-print(len(res))
-print("summ time", current)
-
-
-
 
 
 class dicts:
@@ -398,6 +466,3 @@ class dicts:
 
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
-
-
-
