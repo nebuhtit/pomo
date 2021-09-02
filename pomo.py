@@ -13,8 +13,14 @@ import traceback
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
-import selenium
-from selenium import webdriver
+import re
+
+try:
+    import selenium
+    from selenium import webdriver
+except:
+    pass
+
 import  time
 import datetime
 from pprint import pprint
@@ -59,6 +65,31 @@ def repetitive(list, Return='not_repetitive'):
     if Return == 'repetitive':
         return repetitive
 
+def is_there(needed_object_or_list, in_this_list, show_missed=True):
+    # Показывает каких объектов из одного списка нет в другом. или какие там есть.
+    # Если выбран один объект выдает количиство таких объектов в списке.
+    if type(needed_object_or_list) != list:
+        c = 0
+        for object in in_this_list:
+            if object == needed_object_or_list:
+                c += 1
+            else:
+                pass
+        return c # количество объектов в списке
+    else:
+        if show_missed == True:
+            missed = []
+            for object in needed_object_or_list:
+                if object not in in_this_list:
+                    missed.append(object)
+            return missed
+        if show_missed == False:
+            not_missed = []
+            for object in needed_object_or_list:
+                if object in in_this_list:
+                    not_missed.append(object)
+            return not_missed
+
 
 def url_to_b64(link_to_file, file_name=None):
     # скачивает файл по ссылке и записывает его в виде base64
@@ -67,6 +98,47 @@ def url_to_b64(link_to_file, file_name=None):
         return fileB64
     else:
         write_f(fileB64, file_name)
+
+
+def save_results(List_of_arts):
+    # не тестил. Должна сохранять результаты хороших и ошибок.
+    import os
+    if not os.path.exists('pomo_timely_files'):
+        os.mkdir('pomo_timely_files')
+
+    write_j([], 'pomo_timely_files/error.json')
+    write_j([], 'pomo_timely_files/save.json')
+    write_j([], 'pomo_timely_files/save1.json')
+
+    already_error = read_j('pomo_timely_files/error.json')
+
+    for q in already_error:
+        List_of_arts.append(q)
+
+    downloaded = []
+    already_downloaded = read_j('pomo_timely_files/save.json')
+    for e in already_downloaded:
+        downloaded.append(list(e.keys())[0])
+
+    already_downloaded_1 = read_j('pomo_timely_files/save1.json')
+    for r in already_downloaded_1:
+        downloaded.append(list(r.keys())[0])
+
+    save = already_downloaded
+    # print(norm)
+    save1 = already_downloaded_1
+    # print(morethan6)
+    error = []
+
+    def save(one_dict):
+        # key of one dict shoot be article
+        save.append(one_dict)
+        write_j(data=save, file_name='pomo_timely_files/save.json')
+
+    def save1(one_dict):
+        save1.append(one_dict)
+        write_j(data=save1, file_name='pomo_timely_files/save1.json')
+
 
 
 # arts = """104386
@@ -81,61 +153,21 @@ def url_to_b64(link_to_file, file_name=None):
 # 106032
 # 106033
 # 106034
-# 106035
-# 106036
-# 106037
-# 106038
-# 106039
-# 106040
-# 106041
-# 106903
-# 106904
-# 106905
-# 106906
-# 106907
-# 106908
-# 106909
-# 106910
-# 106911
-# 106912
-# 106913
-# 106914
-# 106915
-# 106916
-# 119429
-# 120651
-# 120652
-# 120653
-# 120654
-# 120655
-# 120656
-# 120657
-# 120658
-# 120659
-# 120660
-# 120661
-# 120662
-# 120663
-# 120664
-# 120665
-# 120666
 # """.split('\n')
 
-def func(art):
-    try:
-        page = requests.get('https://datasheet.eaton.com/datasheet.php?model=' + art + '&locale=ru_RU',
-                            timeout=25).content
-        title_ = [bs(page, features='html.parser').find('div', class_='ds-header-content-product-description').text]
-    except:
-        title_ = None
-    return title_
+# def func(art):
+#     try:
+#         page = requests.get('https://datasheet.eaton.com/datasheet.php?model=' + art + '&locale=ru_RU',
+#                             timeout=25).content
+#         title_ = [bs(page, features='html.parser').find('div', class_='ds-header-content-product-description').text]
+#     except:
+#         title_ = None
+#     return title_
 
 
 def threads(func, List, max_workers=20):
-    import os
-    if not os.path.exists('pomo_timely_files'):
-        os.mkdir('pomo_timely_files')
-
+    # Выполняет переданную внутрь функцию в много поточном режиме. Регулируется кол-во потоков.
+    # Пока что проблемы с глобальными переменными вне этой функции.
     futures = []
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
@@ -147,7 +179,6 @@ def threads(func, List, max_workers=20):
         for future in futures:
             list_res.append(future.result())
 
-
     return(list_res)
 
 # old = time.time()
@@ -156,6 +187,7 @@ def threads(func, List, max_workers=20):
 # print(time.time() - old)
 
 def threads20(func, List):
+    # Старая многопоточность через файлы.
     import os
     if not os.path.exists('pomo_timely_files'):
         os.mkdir('pomo_timely_files')
@@ -368,8 +400,8 @@ def threads20(func, List):
 
 
 class dicts:
-
-    def func_for_each(list_with_dict, func, key, key2=None, key3=None, key4=None, key5=None):
+    # Операции для диктов. Преимущественно специализированы под мои задачи.
+    def func_for_each_value(list_with_dict, func, key, key2=None, key3=None, key4=None, key5=None):
         new_list = []
         # Применняет функцию к каждому значению елемента списка найденному по заданным ключам
 
@@ -400,7 +432,7 @@ class dicts:
 
         return new_list
 
-    def remove_element(list_with_dict, key, key2=None, key3=None, key4=None, key5=None):
+    def remove_element_in_each(list_with_dict, key, key2=None, key3=None, key4=None, key5=None):
 
         # Удаляет необходимый ключ и его значение в каждом элементе списка. Находит по задонному пути из ключей
 
@@ -425,6 +457,15 @@ class dicts:
                 element[key][key2][key3][key4].pop(key5)
 
         return list_with_dict
+
+    def func_for_each_key(list_with_dict, func):
+        l = []
+        for element in list_with_dict:
+            new_element = {func(list(element.keys())[0]): list(element.values())[0]}
+            l.append(new_element)
+        return l
+
+
 
     def dicts_to_xlsx(list_with_dict, file_name):
         # CHOSE LIST WITH DICTS OR PUTH TO JSON
@@ -466,3 +507,5 @@ class dicts:
 
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
+
+
