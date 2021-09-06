@@ -165,7 +165,7 @@ def save_results(List_of_arts):
 #     return title_
 
 
-def threads(func, List, max_workers=20):
+def threads(func, List, max_workers=20, file_name=None):
     # Выполняет переданную внутрь функцию в много поточном режиме. Регулируется кол-во потоков.
     # Пока что проблемы с глобальными переменными вне этой функции.
     futures = []
@@ -178,6 +178,9 @@ def threads(func, List, max_workers=20):
         list_res = []
         for future in futures:
             list_res.append(future.result())
+
+            if file_name != None:
+                write_j(data=list_res, file_name=file_name)
 
     return(list_res)
 
