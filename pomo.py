@@ -14,6 +14,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import re
+import zlib
 
 try:
     import selenium
@@ -400,6 +401,44 @@ def threads20(func, List):
 
     listOfItems = lis1 + lis2 + lis3 + lis4 + lis5 + lis6 + lis7 + lis8 + lis9 + lis10 + lis11 + lis12 + lis13 + lis14 + lis15 + lis16 + lis17 + lis18 + lis19 + lis20
     return listOfItems
+
+def rationally_compress(text, b64=True):
+    # Уменьшает вес стоки если это рационально. По умолчанию возвращает текст base64
+    text1 = text.encode('utf-8')
+    print(text1, len(text1))
+    text_compressed = zlib.compress(text.encode('utf-8'))
+    print(text_compressed, len(text_compressed))
+    if len(text_compressed) >= len(text1):
+        if b64 == True:
+            text_b64 = base64.b64encode(text1).decode('utf-8')
+            return text_b64
+        else:
+            return text1
+    else:
+        if b64 == True:
+            # print(text_compressed, type(text_compressed))
+            text_b64 = base64.b64encode(text_compressed).decode('utf-8')
+            return text_b64
+        else:
+            return text_compressed
+
+
+def rationally_DEcompress(text_or_bytes):
+    # Восстанавливает сжатый текст
+    if type(text_or_bytes) == str:
+        try:
+            decompresed = zlib.decompress(base64.b64decode(text_or_bytes)).decode('utf-8')
+            return decompresed
+        except:
+            de_b64 = base64.b64decode(text_or_bytes).decode('utf-8')
+            return de_b64
+    else:
+        try:
+            decompresed = zlib.decompress(text_or_bytes).decode('utf-8')
+            return decompresed
+        except:
+            de_b64 = text_or_bytes.decode('utf-8')
+            return de_b64
 
 
 class dicts:
