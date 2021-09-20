@@ -2,19 +2,27 @@
 ##  POMOgalki  ##
 
 # cd "venv\Scripts"
-# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium
+# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml
 
 
-import json
+
 import sys
 import traceback
 
-
+# import json
+import xmltodict
+from json2xml import json2xml
 import requests
 from bs4 import BeautifulSoup as bs
 import pandas as pd
 import re
 import zlib
+
+
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 try:
     import selenium
@@ -29,7 +37,8 @@ import base64
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
-
+def bss(url):
+    return bs(url, 'html.parser')
 
 def read_f(file_name, encod='utf8'):
     with open(file_name, 'r', encoding=encod) as f:
@@ -140,30 +149,49 @@ def save_results(List_of_arts):
         save1.append(one_dict)
         write_j(data=save1, file_name='pomo_timely_files/save1.json')
 
+def xml_to_json(xml_file_or_path, file_json=None):
+    if type(xml_file_or_path) == str:
+        f = read_f(xml_file_or_path)
+    else:
+        f = xml_file_or_path
+        xml_file_or_path = None
+
+    j = xmltodict.parse(f)
+    if file_json != None:
+        write_j(data=j, file_name=file_json)
+    return j
+
+xml_to_json('www-FLUKE.xml', 'fluke.json')
 
 
-# arts = """104386
-# 104387
-# 106025
-# 106026
-# 106027
-# 106028
-# 106029
-# 106030
-# 106031
-# 106032
-# 106033
-# 106034
-# """.split('\n')
+def json_to_xml(dict_or_json, name_xml=None, replHTMLsymb=True):
+    if type(dict_or_json) == str:
+        d = read_j(dict_or_json)
+    else:
+        d = dict_or_json
+        dict_or_json = None
+    x = json2xml.Json2xml(d).to_xml()
+    if replHTMLsymb == True:
+        if '&quot;' in x:
+            x = re.sub('&quot;', '"', x)
 
-# def func(art):
-#     try:
-#         page = requests.get('https://datasheet.eaton.com/datasheet.php?model=' + art + '&locale=ru_RU',
-#                             timeout=25).content
-#         title_ = [bs(page, features='html.parser').find('div', class_='ds-header-content-product-description').text]
-#     except:
-#         title_ = None
-#     return title_
+        if '&apos;' in x:
+            x = re.sub('&apos;', "'", x)
+
+        if '&lt;' in x:
+            x = re.sub('&lt;', '<', x)
+
+        if '&gt;' in x:
+            x = re.sub('&gt;', '>', x)
+
+        if '&amp;' in x:
+            x = re.sub('&amp;', '&', x)
+
+    if name_xml != None:
+        write_f(x, name_xml)
+    return x
+
+json_to_xml('fluke.json', 'fluke.xml')
 
 
 def threads(func, List, max_workers=20, file_name=None):
@@ -172,10 +200,12 @@ def threads(func, List, max_workers=20, file_name=None):
     futures = []
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
+
         for i in List:
             futures.append(executor.submit(func, i))
 
         # ждем, когда закончат выполняться задачи
+
         list_res = []
         for future in futures:
             list_res.append(future.result())
@@ -183,224 +213,10 @@ def threads(func, List, max_workers=20, file_name=None):
             if file_name != None:
                 write_j(data=list_res, file_name=file_name)
 
+
     return(list_res)
 
-# old = time.time()
-# data = threads(func, arts)
-# write_j(data, 'RESULT.json')
-# print(time.time() - old)
 
-def threads20(func, List):
-    # Старая многопоточность через файлы.
-    import os
-    if not os.path.exists('pomo_timely_files'):
-        os.mkdir('pomo_timely_files')
-
-
-    delitel = round(len(List) / 20)
-
-    count = 1
-    list1 = []
-    list2 = []
-    list3 = []
-    list4 = []
-    list5 = []
-    list6 = []
-    list7 = []
-    list8 = []
-    list9 = []
-    list10 = []
-    list11 = []
-    list12 = []
-    list13 = []
-    list14 = []
-    list15 = []
-    list16 = []
-    list17 = []
-    list18 = []
-    list19 = []
-    list20 = []
-    # print(List)
-
-    for q in List:
-        if count <= delitel:
-            list1.append(q)
-        # print(list1)
-
-        if (2 * delitel) >= count > delitel:
-            list2.append(q)
-        # print(list2)
-
-        if (3 * delitel) >= count > (2 * delitel):
-            list3.append(q)
-        # print(list3)
-
-        if (4 * delitel) >= count > (3 * delitel):
-            list4.append(q)
-        # print(list4)
-
-        if (5 * delitel) >= count > (4 * delitel):
-            list5.append(q)
-        # print(list5)
-
-        if (6 * delitel) >= count > (5 * delitel):
-            list6.append(q)
-        # print(list6)
-
-        if (7 * delitel) >= count > (6 * delitel):
-            list7.append(q)
-        # print(list7)
-
-        if (8 * delitel) >= count > (7 * delitel):
-            list8.append(q)
-        # print(list8)
-
-        if (9 * delitel) >= count > (8 * delitel):
-            list9.append(q)
-        # print(list9)
-
-        if (10 * delitel) >= count > (9 * delitel):
-            list10.append(q)
-        # print(list10)
-
-        if (11 * delitel) >= count > (10 * delitel):
-            list11.append(q)
-        # print(list11)
-
-        if (12 * delitel) >= count > (11 * delitel):
-            list12.append(q)
-        # print(list12)
-
-        if (13 * delitel) >= count > (12 * delitel):
-            list13.append(q)
-            # print(list13)
-
-        if (14 * delitel) >= count > (13 * delitel):
-            list14.append(q)
-            # print(list14)
-
-        if (15 * delitel) >= count > (14 * delitel):
-            list15.append(q)
-            # print(list15)
-
-        if (16 * delitel) >= count > (15 * delitel):
-            list16.append(q)
-            # print(list16)
-
-        if (17 * delitel) >= count > (16 * delitel):
-            list17.append(q)
-            # print(list17)
-
-        if (18 * delitel) >= count > (17 * delitel):
-            list18.append(q)
-            # print(list18)
-
-        if (19 * delitel) >= count > (18 * delitel):
-            list19.append(q)
-            # print(list19)
-
-        if count > (19 * delitel):
-            list20.append(q)
-            # print(list20)
-
-        count += 1
-
-    def forOneList(OneList, NumberFile):
-        time_old = time.time()
-        l = []
-        for q in OneList:
-            res = func(q)
-            l.append(res)
-        write_j(l, 'pomo_timely_files/file'+str(NumberFile)+'.json')
-        current_time = time.time() - time_old
-        # print( current_time)
-
-    listOfItems1 = threading.Thread(target=forOneList, args=(list1, 1,))
-    listOfItems2 = threading.Thread(target=forOneList, args=(list2, 2,))
-    listOfItems3 = threading.Thread(target=forOneList, args=(list3, 3,))
-    listOfItems4 = threading.Thread(target=forOneList, args=(list4, 4,))
-    listOfItems5 = threading.Thread(target=forOneList, args=(list5, 5,))
-    listOfItems6 = threading.Thread(target=forOneList, args=(list6, 6,))
-    listOfItems7 = threading.Thread(target=forOneList, args=(list7, 7,))
-    listOfItems8 = threading.Thread(target=forOneList, args=(list8, 8,))
-    listOfItems9 = threading.Thread(target=forOneList, args=(list9, 9,))
-    listOfItems10 = threading.Thread(target=forOneList, args=(list10, 10,))
-    listOfItems11 = threading.Thread(target=forOneList, args=(list11, 11,))
-    listOfItems12 = threading.Thread(target=forOneList, args=(list12, 12,))
-    listOfItems13 = threading.Thread(target=forOneList, args=(list13, 13,))
-    listOfItems14 = threading.Thread(target=forOneList, args=(list14, 14,))
-    listOfItems15 = threading.Thread(target=forOneList, args=(list15, 15,))
-    listOfItems16 = threading.Thread(target=forOneList, args=(list16, 16,))
-    listOfItems17 = threading.Thread(target=forOneList, args=(list17, 17,))
-    listOfItems18 = threading.Thread(target=forOneList, args=(list18, 18,))
-    listOfItems19 = threading.Thread(target=forOneList, args=(list19, 19,))
-    listOfItems20 = threading.Thread(target=forOneList, args=(list20, 20,))
-    listOfItems1.start()
-    listOfItems2.start()
-    listOfItems3.start()
-    listOfItems4.start()
-    listOfItems5.start()
-    listOfItems6.start()
-    listOfItems7.start()
-    listOfItems8.start()
-    listOfItems9.start()
-    listOfItems10.start()
-    listOfItems11.start()
-    listOfItems12.start()
-    listOfItems13.start()
-    listOfItems14.start()
-    listOfItems15.start()
-    listOfItems16.start()
-    listOfItems17.start()
-    listOfItems18.start()
-    listOfItems19.start()
-    listOfItems20.start()
-
-    listOfItems1.join()
-    listOfItems2.join()
-    listOfItems3.join()
-    listOfItems4.join()
-    listOfItems5.join()
-    listOfItems6.join()
-    listOfItems7.join()
-    listOfItems8.join()
-    listOfItems9.join()
-    listOfItems10.join()
-    listOfItems11.join()
-    listOfItems12.join()
-    listOfItems13.join()
-    listOfItems14.join()
-    listOfItems15.join()
-    listOfItems16.join()
-    listOfItems17.join()
-    listOfItems18.join()
-    listOfItems19.join()
-    listOfItems20.join()
-
-    lis1 = read_j('pomo_timely_files/file1.json')
-    lis2 = read_j('pomo_timely_files/file2.json')
-    lis3 = read_j('pomo_timely_files/file3.json')
-    lis4 = read_j('pomo_timely_files/file4.json')
-    lis5 = read_j('pomo_timely_files/file5.json')
-    lis6 = read_j('pomo_timely_files/file6.json')
-    lis7 = read_j('pomo_timely_files/file7.json')
-    lis8 = read_j('pomo_timely_files/file8.json')
-    lis9 = read_j('pomo_timely_files/file9.json')
-    lis10 = read_j('pomo_timely_files/file10.json')
-    lis11 = read_j('pomo_timely_files/file11.json')
-    lis12 = read_j('pomo_timely_files/file12.json')
-    lis13 = read_j('pomo_timely_files/file13.json')
-    lis14 = read_j('pomo_timely_files/file14.json')
-    lis15 = read_j('pomo_timely_files/file15.json')
-    lis16 = read_j('pomo_timely_files/file16.json')
-    lis17 = read_j('pomo_timely_files/file17.json')
-    lis18 = read_j('pomo_timely_files/file18.json')
-    lis19 = read_j('pomo_timely_files/file19.json')
-    lis20 = read_j('pomo_timely_files/file20.json')
-
-
-    listOfItems = lis1 + lis2 + lis3 + lis4 + lis5 + lis6 + lis7 + lis8 + lis9 + lis10 + lis11 + lis12 + lis13 + lis14 + lis15 + lis16 + lis17 + lis18 + lis19 + lis20
-    return listOfItems
 
 def rationally_compress(text, b64=True):
     # Уменьшает вес стоки если это рационально. По умолчанию возвращает текст base64
@@ -507,13 +323,58 @@ class dicts:
             l.append(new_element)
         return l
 
+    def list_divider(list_or_file, amount_of_one, exported_file_name=True):
+        import os
+        # Принимает список или файл,
+        # если файл по умолчанию сохранит копии если exported_file_name=True
+        # если список сохранит если exported_file_name задать имя файла (директорию и имя файла)
+
+        if type(list_or_file) == str:
+            if exported_file_name == True:
+                exported_file_name, f_ext = os.path.splitext(list_or_file)
+                exported_file_name = os.path.basename(exported_file_name)
+            else:
+                pass
+            print(exported_file_name)
+            list_or_file = read_j(list_or_file)
+
+        def adding(List, amount_of_one):
+            C = 0
+            c = 0
+            L = []
+            l = []
+            for q in List:
+                if c == 0:
+                    L.append([])
+                if c < amount_of_one:
+                    L[C].append(q)
+                    c += 1
+                else:
+                    c = 0
+                    C += 1
+            return L
+
+        divided_list = adding(list_or_file, amount_of_one)
+
+        if type(exported_file_name) != bool:
+
+            c = 1
+            for e in divided_list:
+                name_of_file = exported_file_name + '(' + str(c) + ')' + '.json'
+                write_j(e, name_of_file)
+                c += 1
+        return divided_list
 
 
-    def dicts_to_xlsx(list_with_dict, file_name):
+
+    def dicts_to_xlsx(list_with_dict, file_name, transpose=False):
         # CHOSE LIST WITH DICTS OR PUTH TO JSON
         if type(list_with_dict) == str:
             list_with_dict = read_j(list_with_dict)
-        df = pd.DataFrame(list_with_dict).to_excel(file_name)
+        if transpose == False:
+            df = pd.DataFrame(list_with_dict).to_excel(file_name)
+        else:
+            df = pd.DataFrame(list_with_dict).transpose().to_excel(file_name)
 
 
     def xlsx_to_dict(file_name, na_filter=False, index_col=0, transpose=True, json_name=None):
