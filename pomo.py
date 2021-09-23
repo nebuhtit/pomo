@@ -105,6 +105,50 @@ def is_there(needed_object_or_list, in_this_list, show_missed=True):
             return not_missed
 
 
+
+# Divides the list or str
+def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
+    if lenOfElement != None and lenOfResultlist != None:
+        print('Choose lenOfElement or lenOfResultlist')
+        1/0
+    if lenOfResultlist != None:
+        lenOfElement = round(len(list_or_str)/lenOfResultlist)+1
+        print(lenOfElement)
+    if type(list_or_str) == list:
+        c = 1
+        little = []
+        sum = []
+        for q in list_or_str:
+            if c < lenOfElement:
+                c += 1
+                little.append(q)
+            if c == lenOfElement:
+                c = 1
+                little.append(q)
+                sum.append(little)
+                little = []
+        if little != []:
+            sum.append(little)
+    if type(list_or_str) == str:
+        lenOfElement = lenOfElement + 1
+        c = 1
+        little = ''
+        sum = []
+        for q in list_or_str:
+            if c < lenOfElement:
+                c += 1
+                little = little + q
+            if c == lenOfElement:
+                c = 1
+                # little = little + q
+                sum.append(little)
+                little = ''
+        if little != '':
+            sum.append(little)
+    return sum
+
+
+
 def url_to_b64(link_to_file, file_name=None):
     # скачивает файл по ссылке и записывает его в виде base64
     fileB64 = base64.b64encode(requests.get(link_to_file).content).decode('utf8')
