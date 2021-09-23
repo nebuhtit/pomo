@@ -2,7 +2,7 @@
 ##  POMOgalki  ##
 
 # cd "venv\Scripts"
-# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml
+# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream
 
 
 
@@ -17,7 +17,11 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import re
 import zlib
+import jmespath
+from icecream import ic
+ic.configureOutput(includeContext=True)
 
+print = ic
 
 try:
     import simplejson as json
@@ -161,7 +165,7 @@ def xml_to_json(xml_file_or_path, file_json=None):
         write_j(data=j, file_name=file_json)
     return j
 
-xml_to_json('www-FLUKE.xml', 'fluke.json')
+# xml_to_json('www-FLUKE.xml', 'fluke.json')
 
 
 def json_to_xml(dict_or_json, name_xml=None, replHTMLsymb=True):
@@ -191,7 +195,7 @@ def json_to_xml(dict_or_json, name_xml=None, replHTMLsymb=True):
         write_f(x, name_xml)
     return x
 
-json_to_xml('fluke.json', 'fluke.xml')
+# json_to_xml('fluke.json', 'fluke.xml')
 
 
 def threads(func, List, max_workers=20, file_name=None):
