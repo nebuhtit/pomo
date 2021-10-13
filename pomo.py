@@ -20,6 +20,7 @@ import zlib
 import jmespath
 from icecream import ic
 ic.configureOutput(includeContext=True)
+import datetime
 
 print = ic
 
@@ -67,12 +68,17 @@ def write_j(data, file_name, type='w', indent=4, ensure_ascii=False, encod='utf8
 
 def repetitive(list, Return='not_repetitive'):
     repetitive = []
+    already = []
     not_repetitive = []
     for q in list:
-        if q not in not_repetitive:
+        if q not in already and q not in repetitive:
+            already.append(q)
             not_repetitive.append(q)
         else:
             repetitive.append(q)
+            try:
+                not_repetitive.remove(q)
+            except ValueError: pass
 
     if Return == 'not_repetitive':
         return not_repetitive
@@ -458,5 +464,4 @@ class dicts:
 
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
-
 
