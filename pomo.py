@@ -2,7 +2,7 @@
 ##  POMOgalki  ##
 
 # cd "venv\Scripts"
-# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream
+# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname
 
 
 
@@ -10,6 +10,8 @@ import sys
 import traceback
 
 # import json
+from varname import nameof
+import varname
 import xmltodict
 from json2xml import json2xml
 import requests
@@ -45,25 +47,43 @@ from concurrent.futures import ThreadPoolExecutor
 def bss(url):
     return bs(url, 'html.parser')
 
-def read_f(file_name, encod='utf8'):
-    with open(file_name, 'r', encoding=encod) as f:
-        F = f.read()
-        return F
-
-def write_f(data, file_name, type='w', encod='utf8'):
-    with open(file_name, type, encoding=encod) as f:
-        f.write(data)
-
-
 def read_j(file_name, encod='utf8'):
     with open(file_name, 'r', encoding=encod) as f:
         F = json.load(f)
         return F
 
 
-def write_j(data, file_name, type='w', indent=4, ensure_ascii=False, encod='utf8'):
-    with open(file_name, type, encoding=encod) as f:
+def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod='utf8'):
+    if file_name == None:
+        file_name = varname.nameof(data, frame=2) + '.json'
+
+    with open(file_name, type_, encoding=encod) as f:
         json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
+
+def read_f(file_name, encod='utf8'):
+    with open(file_name, 'r', encoding=encod) as f:
+        F = f.read()
+        return F
+
+def write_f(data, file_name=None, type_='w', encod='utf8'):
+    print(data)
+    if file_name == None:
+        file_name = varname.nameof(data, frame=2)
+        if type(data) == list or type(data) == dict:
+            write_j(data, file_name+'.json')
+        elif type(data) == str:
+            file_name = file_name + '.txt'
+            with open(file_name, type_, encoding=encod) as f:
+                f.write(data)
+        else:
+            with open(file_name, type_, encoding=encod) as f:
+                f.write(data)
+    else:
+        with open(file_name, type_, encoding=encod) as f:
+            f.write(data)
+
+
+
 
 
 def repetitive(list, Return='not_repetitive'):
@@ -464,4 +484,5 @@ class dicts:
 
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
+
 
