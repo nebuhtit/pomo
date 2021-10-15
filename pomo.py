@@ -57,6 +57,9 @@ def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod
     if file_name == None:
         file_name = varname.nameof(data, frame=2) + '.json'
 
+    if type(data) != list or type(data) != dict:
+        data = [data]
+
     with open(file_name, type_, encoding=encod) as f:
         json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
 
@@ -485,4 +488,8 @@ class dicts:
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
 
+# Testing
+
+test = 'sdf'
+write_j(test)
 
