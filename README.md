@@ -4,7 +4,7 @@ Simplifications for python works with data (xls to dict, dict to xls, easy threa
 
 ## Write files easier
 
-### It wrires data from test to test.json
+### It writes data from test to test.json
 
 test = [0,"hello", {"a": "world", "b": "!"}]
 
