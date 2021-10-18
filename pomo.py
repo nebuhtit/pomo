@@ -4,8 +4,6 @@
 # cd "venv\Scripts"
 # venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname
 
-
-
 import sys
 import traceback
 
@@ -138,6 +136,27 @@ def is_there(needed_object_or_list, in_this_list, show_missed=True):
                 if object in in_this_list:
                     not_missed.append(object)
             return not_missed
+
+
+# Prints time left
+def time_left(c, pro, old_time, items):
+    # Вcтавить вне цикла:
+    # C = 1
+    # pro = 0
+    # Вставить в начале цикла:
+    # old_time = time.time()
+    # C += 1
+    left = (len(items) - c)
+    finish_time = time.time()
+    timer_for_one = finish_time - old_time
+    time_left = (timer_for_one * left)
+    time_till = time.strftime("%H:%M", time.localtime(time.time() + time_left))
+    # print(timer_for_one)
+    # print(left)
+    if pro != round(100 - (100 / (len(items)) * (len(items) - c)), 1):
+        pro = round(100 - (100 / (len(items)) * (len(items) - c)), 1)
+        print(pro, '%')
+        print(time_till)
 
 
 # Divides the list or str
@@ -454,5 +473,3 @@ class dicts:
 
 
 # Testing
-
-
