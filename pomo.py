@@ -400,50 +400,6 @@ class dicts:
             l.append(new_element)
         return l
 
-    def list_divider(list_or_file, amount_of_one, exported_file_name=True):
-        import os
-        # Принимает список или файл,
-        # если файл по умолчанию сохранит копии если exported_file_name=True
-        # если список сохранит если exported_file_name задать имя файла (директорию и имя файла)
-
-        if type(list_or_file) == str:
-            if exported_file_name == True:
-                exported_file_name, f_ext = os.path.splitext(list_or_file)
-                exported_file_name = os.path.basename(exported_file_name)
-            else:
-                pass
-            print(exported_file_name)
-            list_or_file = read_j(list_or_file)
-
-        def adding(List, amount_of_one):
-            C = 0
-            c = 0
-            L = []
-            l = []
-            for q in List:
-                if c == 0:
-                    L.append([])
-                if c < amount_of_one:
-                    L[C].append(q)
-                    c += 1
-                else:
-                    c = 0
-                    C += 1
-            return L
-
-        divided_list = adding(list_or_file, amount_of_one)
-
-        if type(exported_file_name) != bool:
-
-            c = 1
-            for e in divided_list:
-                name_of_file = exported_file_name + '(' + str(c) + ')' + '.json'
-                write_j(e, name_of_file)
-                c += 1
-        return divided_list
-
-
-
     def dicts_to_xlsx(list_with_dict, file_name, transpose=False):
         # CHOSE LIST WITH DICTS OR PUTH TO JSON
         if type(list_with_dict) == str:
@@ -490,6 +446,4 @@ class dicts:
 
 # Testing
 
-test = 'sdf'
-write_j(test)
 
