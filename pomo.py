@@ -26,10 +26,7 @@ import datetime
 
 print = ic
 
-try:
-    import simplejson as json
-except ImportError:
-    import json
+import json
 
 try:
     import selenium
@@ -44,15 +41,20 @@ import base64
 import threading
 from concurrent.futures import ThreadPoolExecutor
 
+
+# Simplification of the link fence by BeautifulSoup
 def bss(url):
     return bs(url, 'html.parser')
 
+
+# Making it easier to read json
 def read_j(file_name, encod='utf8'):
     with open(file_name, 'r', encoding=encod) as f:
         F = json.load(f)
         return F
 
 
+# Making it easier to write json
 def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod='utf8'):
     if file_name == None:
         file_name = varname.nameof(data, frame=2) + '.json'
@@ -63,11 +65,15 @@ def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod
     with open(file_name, type_, encoding=encod) as f:
         json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
 
+
+# Making it easier to read file
 def read_f(file_name, encod='utf8'):
     with open(file_name, 'r', encoding=encod) as f:
         F = f.read()
         return F
 
+
+# Making it easier to write file
 def write_f(data, file_name=None, type_='w', encod='utf8'):
     print(data)
     if file_name == None:
@@ -86,10 +92,8 @@ def write_f(data, file_name=None, type_='w', encod='utf8'):
             f.write(data)
 
 
-
-
-
-def repetitive(list, Return='not_repetitive'):
+# Looks for repetitive in the list
+def repetitive(list, repetitive=False):
     repetitive = []
     already = []
     not_repetitive = []
@@ -103,11 +107,13 @@ def repetitive(list, Return='not_repetitive'):
                 not_repetitive.remove(q)
             except ValueError: pass
 
-    if Return == 'not_repetitive':
-        return not_repetitive
-    if Return == 'repetitive':
-        return repetitive
+    if repetitive == False:
+        return not_repetitive # Выдает не повторяющиеся
+    if repetitive == True:
+        return repetitive # Выдает повторяющиеся
 
+
+# Is there elements from one list in another list?
 def is_there(needed_object_or_list, in_this_list, show_missed=True):
     # Показывает каких объектов из одного списка нет в другом. или какие там есть.
     # Если выбран один объект выдает количиство таких объектов в списке.
@@ -132,7 +138,6 @@ def is_there(needed_object_or_list, in_this_list, show_missed=True):
                 if object in in_this_list:
                     not_missed.append(object)
             return not_missed
-
 
 
 # Divides the list or str
@@ -177,7 +182,7 @@ def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
     return sum
 
 
-
+# downloads the file from the link and writes it as base64
 def url_to_b64(link_to_file, file_name=None):
     # скачивает файл по ссылке и записывает его в виде base64
     fileB64 = base64.b64encode(requests.get(link_to_file).content).decode('utf8')
@@ -187,6 +192,7 @@ def url_to_b64(link_to_file, file_name=None):
         write_f(fileB64, file_name)
 
 
+# Experementally. Don't use. Just for example.
 def save_results(List_of_arts):
     # не тестил. Должна сохранять результаты хороших и ошибок.
     import os
@@ -226,6 +232,8 @@ def save_results(List_of_arts):
         save1.append(one_dict)
         write_j(data=save1, file_name='pomo_timely_files/save1.json')
 
+
+# Xml to json
 def xml_to_json(xml_file_or_path, file_json=None):
     if type(xml_file_or_path) == str:
         f = read_f(xml_file_or_path)
@@ -238,9 +246,8 @@ def xml_to_json(xml_file_or_path, file_json=None):
         write_j(data=j, file_name=file_json)
     return j
 
-# xml_to_json('www-FLUKE.xml', 'fluke.json')
 
-
+# Json_to_xml
 def json_to_xml(dict_or_json, name_xml=None, replHTMLsymb=True):
     if type(dict_or_json) == str:
         d = read_j(dict_or_json)
@@ -268,9 +275,8 @@ def json_to_xml(dict_or_json, name_xml=None, replHTMLsymb=True):
         write_f(x, name_xml)
     return x
 
-# json_to_xml('fluke.json', 'fluke.xml')
 
-
+# Executes a passed-in function in multi-threaded mode. The number of threads is regulated.
 def threads(func, List, max_workers=20, file_name=None):
     # Выполняет переданную внутрь функцию в много поточном режиме. Регулируется кол-во потоков.
     # Пока что проблемы с глобальными переменными вне этой функции.
@@ -294,7 +300,7 @@ def threads(func, List, max_workers=20, file_name=None):
     return(list_res)
 
 
-
+# Reduces the weight of the stock if it is rational. Returns base64 text by default
 def rationally_compress(text, b64=True):
     # Уменьшает вес стоки если это рационально. По умолчанию возвращает текст base64
     text1 = text.encode('utf-8')
@@ -316,6 +322,7 @@ def rationally_compress(text, b64=True):
             return text_compressed
 
 
+# Recovers compressed text
 def rationally_DEcompress(text_or_bytes):
     # Восстанавливает сжатый текст
     if type(text_or_bytes) == str:
@@ -334,6 +341,7 @@ def rationally_DEcompress(text_or_bytes):
             return de_b64
 
 
+# Operations for dictation. Mostly specialized for my tasks.
 class dicts:
     # Операции для диктов. Преимущественно специализированы под мои задачи.
     def func_for_each_value(list_with_dict, func, key, key2=None, key3=None, key4=None, key5=None):
@@ -443,6 +451,7 @@ class dicts:
 
     def dicts_to_csv(list_with_dict, file_name):
         df = pd.DataFrame(list_with_dict).to_csv(file_name)
+
 
 # Testing
 
