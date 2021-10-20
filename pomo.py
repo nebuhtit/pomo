@@ -158,13 +158,19 @@ def time_left(c, pro, old_time, items):
 
 
 # Divides the list or str
-def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
+def divider_list(list_or_str, lenOfElement, lenOfResultlist=None, NameOfFolder=None):
     if lenOfElement != None and lenOfResultlist != None:
         print('Choose lenOfElement or lenOfResultlist')
         1/0
     if lenOfResultlist != None:
         lenOfElement = round(len(list_or_str)/lenOfResultlist)+1
         print(lenOfElement)
+    if type(list_or_str) and NameOfFolder != None:
+        from os import makedirs, path
+        name_data = path.splitext(list_or_str)[0]
+        # print(name_data)
+        list_or_str = read_j(list_or_str)
+
     if type(list_or_str) == list:
         c = 1
         little = []
@@ -180,7 +186,7 @@ def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
                 little = []
         if little != []:
             sum.append(little)
-    if type(list_or_str) == str:
+    if type(list_or_str) == str and NameOfFolder == None:
         lenOfElement = lenOfElement + 1
         c = 1
         little = ''
@@ -196,6 +202,19 @@ def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
                 little = ''
         if little != '':
             sum.append(little)
+    if NameOfFolder != None:
+
+        if NameOfFolder == True:
+            NameOfFolder = name_data
+            makedirs(NameOfFolder)
+        else:
+            if not path.exists(NameOfFolder):
+                makedirs(NameOfFolder)
+        n_fold = 1
+        for part in sum:
+            write_j(part, NameOfFolder + '/' + name_data + str(n_fold) + '.json')
+            n_fold += 1
+
     return sum
 
 
