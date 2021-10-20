@@ -58,9 +58,6 @@ def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod
     if file_name == None:
         file_name = varname.nameof(data, frame=2) + '.json'
 
-    if type(data) != list or type(data) != dict:
-        data = [data]
-
     with open(file_name, type_, encoding=encod) as f:
         json.dump(data, f, indent=indent, ensure_ascii=ensure_ascii)
 
@@ -202,7 +199,7 @@ def divider_list(list_or_str, lenOfElement, lenOfResultlist=None):
     return sum
 
 
-# downloads the file from the link and writes it as base64
+# Downloads the file from the link and writes it as base64
 def url_to_b64(link_to_file, file_name=None):
     # скачивает файл по ссылке и записывает его в виде base64
     fileB64 = base64.b64encode(requests.get(link_to_file).content).decode('utf8')
