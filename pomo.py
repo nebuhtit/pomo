@@ -77,15 +77,15 @@ def write_f(data, file_name=None, type_='w', encod='utf8'):
     # print(data)
     if file_name == None:
         file_name = varname.nameof(data, frame=2)
-    if type(data) == list or type(data) == dict:
-        write_j(data, file_name+'.json')
-    elif type(data) == str:
-        file_name = file_name + '.txt'
-        with open(file_name, type_, encoding=encod) as f:
-            f.write(data)
-    elif type(data) == bytes:
-        with open(file_name, mode='wb', encoding=None) as f:
-            f.write(data)
+        if type(data) == list or type(data) == dict:
+            write_j(data, file_name+'.json')
+        elif type(data) == str:
+            file_name = file_name + '.txt'
+            with open(file_name, type_, encoding=encod) as f:
+                f.write(data)
+        elif type(data) == bytes:
+            with open(file_name, mode='wb', encoding=None) as f:
+                f.write(data)
     else:
         with open(file_name, type_, encoding=encod) as f:
             f.write(data)
