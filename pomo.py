@@ -8,8 +8,14 @@
 import sys
 import traceback
 
-# import json
+import json
+import  time
+import datetime
 from varname import nameof
+from pprint import pprint
+import base64
+import threading
+from concurrent.futures import ThreadPoolExecutor
 import varname
 import xmltodict
 from json2xml import json2xml
@@ -19,26 +25,17 @@ import pandas as pd
 import re
 import zlib
 import jmespath
-from icecream import ic
-ic.configureOutput(includeContext=True)
-import datetime
-
-print = ic
-
-import json
-
+try:
+    from icecream import ic # print with number line and function
+    ic.configureOutput(includeContext=True)
+    print = ic
+except:
+    pass
 try:
     import selenium
     from selenium import webdriver
 except:
     pass
-
-import  time
-import datetime
-from pprint import pprint
-import base64
-import threading
-from concurrent.futures import ThreadPoolExecutor
 
 
 # Simplification of the link fence by BeautifulSoup
