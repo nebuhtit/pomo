@@ -156,16 +156,23 @@ def time_left(c, pro, old_time, items):
 
 # Divides the list or str
 def divider_list(list_or_str, lenOfElement, lenOfResultlist=None, NameOfFolder=None):
+    global path_data, makedirs, path, sum, name_data
+    print("lenOfElement",lenOfElement, type(lenOfElement))
+    if lenOfElement != None:
+        lenOfElement = int(lenOfElement)
+    if lenOfResultlist != None:
+        lenOfResultlist = int(lenOfResultlist)
     if lenOfElement != None and lenOfResultlist != None:
         print('Choose lenOfElement or lenOfResultlist')
         1/0
     if lenOfResultlist != None:
         lenOfElement = round(len(list_or_str)/lenOfResultlist)+1
         print(lenOfElement)
-    if type(list_or_str) and NameOfFolder != None:
+    if type(list_or_str) == str and NameOfFolder != None:
         from os import makedirs, path
-        name_data = path.splitext(list_or_str)[0]
-        # print(name_data)
+        name_data = path.splitext(path. basename(list_or_str))[0]
+        path_data =path.dirname(list_or_str)
+        print("name_data", name_data)
         list_or_str = read_j(list_or_str)
 
     if type(list_or_str) == list:
@@ -202,14 +209,15 @@ def divider_list(list_or_str, lenOfElement, lenOfResultlist=None, NameOfFolder=N
     if NameOfFolder != None:
 
         if NameOfFolder == True:
-            NameOfFolder = name_data
-            makedirs(NameOfFolder)
+            NameOfFolder = name_data+ '_divided'
+            if not path.exists(path_data+'/'+NameOfFolder):
+                makedirs(path_data+'/'+NameOfFolder)
         else:
             if not path.exists(NameOfFolder):
-                makedirs(NameOfFolder)
+                makedirs(path_data+'/'+NameOfFolder)
         n_fold = 1
         for part in sum:
-            write_j(part, NameOfFolder + '/' + name_data + str(n_fold) + '.json')
+            write_j(part, path_data+'/'+NameOfFolder + '/' + name_data + str(n_fold) + '.json')
             n_fold += 1
 
     return sum
