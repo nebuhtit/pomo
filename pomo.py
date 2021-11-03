@@ -25,10 +25,13 @@ import pandas as pd
 import re
 import zlib
 import jmespath
+
+
+
 try:
     from icecream import ic # print with number line and function
     ic.configureOutput(includeContext=True)
-    print = ic
+    # print = ic
 except:
     pass
 try:
@@ -449,6 +452,34 @@ class dicts:
             l.append(new_element)
         return l
 
+    def dict_to_xlsx(dict_or_json_with_dict, file_name, join_by=None):
+        if type(dict_or_json_with_dict) == str:
+            j = read_j(dict_or_json_with_dict)
+        else:
+            j = dict_or_json_with_dict
+        keys = list(j.keys())
+        values = list(j.values())
+
+        c = 0
+        k = {}
+        for q in keys:
+            d = {c: q}
+            k.update(d)
+            c += 1
+
+        c1 = 0
+        v = {}
+        for w in values:
+            if join_by != None:
+                w = join_by.join(w)
+            d1 = {c1: w}
+            v.update(d1)
+            c1 += 1
+
+        res = {'KEYS': k, 'VALUES': v}
+        # print(res)
+        pd.DataFrame(res).to_excel(file_name)
+
     def dicts_to_xlsx(list_with_dict, file_name, transpose=False):
         # CHOSE LIST WITH DICTS OR PUTH TO JSON
         if type(list_with_dict) == str:
@@ -495,3 +526,5 @@ class dicts:
 
 
 # Testing
+
+
