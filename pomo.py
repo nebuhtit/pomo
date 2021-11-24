@@ -527,4 +527,13 @@ class dicts:
 
 # Testing
 
+import qrcode
+text = """
 
+"""
+text = pomo.rationally_compress(text)
+
+img = qrcode.make(text)
+img.save('hi.png')
+
+print(len(text))
