@@ -527,13 +527,13 @@ class dicts:
 
 # Testing
 
-import qrcode
-text = """
+# import qrcode
+# text = """
 
-"""
-text = pomo.rationally_compress(text)
+# """
+# text = pomo.rationally_compress(text)
 
-img = qrcode.make(text)
-img.save('hi.png')
+# img = qrcode.make(text)
+# img.save('hi.png')
 
-print(len(text))
+# print(len(text))
