@@ -2,9 +2,9 @@
 ##  POMOgalki  ##
 
 # cd "venv\Scripts"
-# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname
+# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 # cd venv/bin
-# pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname
+# pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 import sys
 import traceback
 
