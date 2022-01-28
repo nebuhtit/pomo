@@ -1,0 +1,10 @@
+requests
+bs4
+pandas
+openpyxl
+selenium
+jmespath
+xmltodict
+json2xml
+icecream
+varname
