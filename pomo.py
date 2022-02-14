@@ -24,6 +24,7 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import re
 import zlib
+import shutil
 import jmespath
 
 
@@ -64,8 +65,8 @@ def write_j(data, file_name=None, type_='w', indent=4, ensure_ascii=False, encod
 
 
 # Making it easier to read file
-def read_f(file_name, encod='utf8'):
-    with open(file_name, 'r', encoding=encod) as f:
+def read_f(file_name, type_='r', encod='utf8'):
+    with open(file_name, type_, encoding=encod) as f:
         F = f.read()
         return F
 
