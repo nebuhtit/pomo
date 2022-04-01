@@ -7,7 +7,7 @@
 # pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 # NOTES
 
-# element = d.find_elements(By.XPATH, "//*[text()[contains(.,'PART OF TEXT')]]")
+# element = d.find_elements(By.XPATH, "//*[text()[contains(.,'PART OF TEXT')]]") # https://stackoverflow.com/questions/3655549/xpath-containstext-some-string-doesnt-work-when-used-with-node-with-more
 
 import sys
 import traceback
