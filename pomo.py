@@ -5,6 +5,10 @@
 # venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 # cd venv/bin
 # pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname, qrcode
+# NOTES
+
+# element = d.find_elements(By.XPATH, "//*[text()[contains(.,'PART OF TEXT')]]")
+
 import sys
 import traceback
 
