@@ -5,9 +5,17 @@
 # venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 # cd venv/bin
 # pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname, qrcode
-# NOTES
 
+# NOTES:
+
+# Find elements by part of text:
 # element = d.find_elements(By.XPATH, "//*[text()[contains(.,'PART OF TEXT')]]") # https://stackoverflow.com/questions/3655549/xpath-containstext-some-string-doesnt-work-when-used-with-node-with-more
+
+
+# Shows network from page on chromedriver:
+# test = d.execute_script('var performance = window.performance || window.mozPerformance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;')
+
+
 
 import sys
 import traceback
