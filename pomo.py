@@ -2,7 +2,8 @@
 ##  POMOgalki  ##
 
 # cd "venv\Scripts"
-# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml, icecream, varname, qrcode
+# venv\Scripts.\pip.exe install requests, bs4, pandas, openpyxl, selenium, simplejson, jmespath, xmltodict, json2xml,
+# icecream, varname, qrcode, ByteSplitter
 # cd venv/bin
 # pip install requests, bs4, pandas, openpyxl, selenium, jmespath, xmltodict, json2xml, icecream, varname, qrcode
 
@@ -18,6 +19,7 @@
 
 
 import sys
+import os
 import traceback
 
 import json
@@ -36,6 +38,7 @@ from bs4 import BeautifulSoup as bs
 import pandas as pd
 import re
 import zlib
+import bysp
 import shutil
 import jmespath
 
@@ -397,6 +400,31 @@ def rationally_DEcompress(text_or_bytes):
         except:
             de_b64 = text_or_bytes.decode('utf-8')
             return de_b64
+        
+# Деление файлов
+
+# Чтобы восстановить нужно прописать имя вайла без
+#
+# расширения "№.part" на конце, иначе будет ошибка
+
+
+### Split file
+# parts = bysp.split_file()
+
+
+
+### Restore file
+# bysp.combine_file()
+
+
+def split_files_in_folder(folder_path, split_count=10, save=True, dest_folder=None):
+    folder_path = os.path.join(folder_path)
+    for item in os.listdir(folder_path):
+        full_path = os.path.join(folder_path, item)
+        nameofile = os.path.basename(full_path)
+        newfolder = os.path.join(dest_folder, nameofile)
+        os.mkdir(newfolder)
+        bysp.split_file(full_path, split_count=split_count, save=save, destination=newfolder)
 
 
 # Operations for dictation. Mostly specialized for my tasks.
