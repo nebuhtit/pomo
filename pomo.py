@@ -47,7 +47,7 @@ import jmespath
 try:
     from icecream import ic # print with number line and function
     ic.configureOutput(includeContext=True)
-    # print = ic
+    print = ic
 except:
     pass
 try:
@@ -411,20 +411,27 @@ def rationally_DEcompress(text_or_bytes):
 ### Split file
 # parts = bysp.split_file()
 
-
-
 ### Restore file
 # bysp.combine_file()
 
 
 def split_files_in_folder(folder_path, split_count=10, save=True, dest_folder=None):
-    folder_path = os.path.join(folder_path)
+    # folder_path_ = os.path.join(folder_path)
     for item in os.listdir(folder_path):
         full_path = os.path.join(folder_path, item)
+        print(folder_path)
         nameofile = os.path.basename(full_path)
+        print(nameofile)
         newfolder = os.path.join(dest_folder, nameofile)
-        os.mkdir(newfolder)
-        bysp.split_file(full_path, split_count=split_count, save=save, destination=newfolder)
+        print(newfolder)
+        if nameofile == 'temp':
+            pass
+        else:
+            if os.path.isdir(newfolder):
+                pass
+            else:
+                os.mkdir(newfolder)
+            bysp.split_file(full_path, split_count=split_count, save=save, destination=newfolder)
 
 
 # Operations for dictation. Mostly specialized for my tasks.
